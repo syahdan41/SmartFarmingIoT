@@ -7,10 +7,10 @@ class InfoSensor extends Component {
         return (
             <ScrollView style={styles.container}>
                 <View style={styles.InfoContainer}>
-                <Text style={styles.InfoStyle}>INFORMASI</Text>
+                <Text style={styles.InfoStyle}>INFORMASI SENSOR TANAMAN</Text>
             </View>
 
-            <View style={styles.ButtonContainer}>
+            <View style={styles.ButtonContainer1}>
                 <View>
                 <TouchableOpacity style={styles.ButtonStyle} onPress={() => this.props.navigation.navigate('Water')}>
                     <Image source={require('../../components/images/humidity.png')} 
@@ -25,6 +25,7 @@ class InfoSensor extends Component {
                     style={styles.ImgStyle}/>
                 </TouchableOpacity>
                     <Text style={styles.TxtStyle1}>Kelembaban</Text>
+                    <Text style={styles.TxtStyle1}>Tanah</Text>
                 </View>
                 
                 <View>
@@ -34,8 +35,26 @@ class InfoSensor extends Component {
                     </TouchableOpacity>
                         <Text style={styles.TxtStyle1}>Suhu</Text>
                 </View>
-                
+            </View>
 
+            <View style={styles.ButtonContainer2}>
+                <View>
+                <TouchableOpacity style={styles.ButtonStyle} onPress={() => this.props.navigation.navigate('AirHumid')}>
+                    <Image source={require('../../components/images/smoke.png')} 
+                    style={styles.ImgStyle}/>
+                </TouchableOpacity>
+                <Text style={styles.TxtStyle1}>Kelembaban</Text>
+                <Text style={styles.TxtStyle1}>Udara</Text>
+                </View>
+
+                <View>
+                <TouchableOpacity style={styles.ButtonStyle} onPress={() => this.props.navigation.navigate('LightIntens')}>
+                    <Image source={require('../../components/images/bulb.png')} 
+                    style={styles.ImgStyle}/>
+                </TouchableOpacity>
+                    <Text style={styles.TxtStyle1}>Intensitas</Text>
+                    <Text style={styles.TxtStyle1}>Cahaya</Text>
+                </View>
             </View>
 
             <View style={styles.btnContainer}>
@@ -75,10 +94,16 @@ const styles = StyleSheet.create({
         fontWeight:'bold',
         paddingVertical:15,
     },
-    ButtonContainer:{
+    ButtonContainer1:{
         flexDirection:'row',
         justifyContent: 'center',
-        marginTop:110,
+        marginTop:50,
+    },
+    ButtonContainer2:{
+        flexDirection:'row',
+        justifyContent: 'center',
+        alignContent:'center',
+        marginTop:25,
     },
     ButtonStyle:{
         borderWidth:3,

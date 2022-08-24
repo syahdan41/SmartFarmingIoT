@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "841315423882",
+    "project_id": "projecttav2-dd435",
+    "storage_bucket": "projecttav2-dd435.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841315423882:android:a994f11ec64f9b62b93f73",
+        "android_client_info": {
+          "package_name": "com.projecttafix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "841315423882-645rdri214i7prdf5bsi2psa9uofpusm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.projecttafix",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "841315423882-digql6dhrgf5rugumblije6uvq413rks.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUBDhuDtYB0cLfj3qR_BLQ70Cnqxpct7w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "841315423882-digql6dhrgf5rugumblije6uvq413rks.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

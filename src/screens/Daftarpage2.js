@@ -12,7 +12,7 @@ class Daftarpage2 extends Component {
                 <View style={styles.txtContainer}>
                     <Text style={styles.grayTxt}>Langkah 2 dari 3</Text>
                     <Text style={styles.titleTxt}>Verifikasi</Text>
-                    <Text style={styles.descTxt}>Masukan 4-digit kode OTP yang telah terkirim melalui nomor telepon kamu.</Text>
+                    <Text style={styles.descTxt}>Silahkan masukan kode OTP yang telah terkirim melalui nomor telepon kamu.</Text>
                     
                         <View style={styles.masukLink}>
                             <Text style={styles.masukTxt}>Bukan kamu?</Text>
@@ -24,13 +24,10 @@ class Daftarpage2 extends Component {
 
                 <View style={styles.verifContainer}>
                     <TextInput style={styles.inputVerif}/>
-                    <TextInput style={styles.inputVerif}/>
-                    <TextInput style={styles.inputVerif}/>
-                    <TextInput style={styles.inputVerif}/>
                 </View>
                 
                 <TouchableOpacity style={styles.lnjtButton} 
-                onPress={() => this.props.navigation.navigate('Login')}>
+                onPress={() => props.onSubmit(code)} >
                     <Text style={styles.buttonTxt}>Lanjut</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.resendButton} 
@@ -95,18 +92,19 @@ const styles = StyleSheet.create({
         fontWeight:'normal',
     },
     verifContainer:{
-        flexDirection:'row',
         justifyContent:'center',
         marginTop:60,
     },
     inputVerif:{
         borderBottomWidth:3,
         borderColor:'#000',
-        marginHorizontal:20,
+        marginHorizontal:90,
         padding:10,
         justifyContent:'center',
         alignItems:'center',
-        fontSize:20,
+        fontSize:35,
+        fontWeight:'bold',
+        textAlign:'center',
     },
     lnjtButton:{
         borderRadius:2,

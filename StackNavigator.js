@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import auth from '@react-native-firebase/auth';
 
 import Landing from './src/screens/Landing';
 import Daftarpage1 from './src/screens/Daftarpage1';
@@ -15,11 +16,32 @@ import About from './src/screens/About';
 import WaterLevel from './src/screens/WaterLevel';
 import Kelembaban from './src/screens/Kelembaban';
 import Suhu from './src/screens/Suhu';
+import Humid from './src/screens/Humid';
+import Light from './src/screens/Light';
 
 
 const Stack = createNativeStackNavigator();
 
 function MainStack(){
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  function onAuthStateChanged(user){
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+  useEffect(()=>{
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber
+  },[]);
+  if (initializing) return null;
+
+  if (!user){
+    <Stack.Navigator screenOptions={{headerShown:false}}>
+      <Stack.Screen name = 'Login' component={Login}/>
+     </Stack.Navigator>
+    
+  }
   return(
       <Stack.Navigator initialRouteName='Landing' screenOptions={{headerShown:false}}>
         <Stack.Screen name = 'Landing' component={Landing}/>
@@ -33,8 +55,9 @@ function MainStack(){
         <Stack.Screen name = 'Humid' component={Kelembaban}/>
         <Stack.Screen name = 'Temp' component={Suhu}/>
         <Stack.Screen name = 'HomeScreen' component={TabNav}/>
+        <Stack.Screen name = 'AirHumid' component={Humid}/>
+        <Stack.Screen name = 'LightIntens' component={Light}/>
       </Stack.Navigator>
-
   );
 }
 

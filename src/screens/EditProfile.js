@@ -1,34 +1,171 @@
-import React, { Component } from 'react';
-import {ScrollView,StyleSheet,Text,TouchableOpacity,Image,View,TextInput,ImageBackground} from 'react-native';
+import React, { Component, useState,useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import {ScrollView,StyleSheet,Text,TouchableOpacity,Image,View,TextInput,ImageBackground, Alert} from 'react-native';
+import ImagePicker from 'react-native-image-crop-picker';
+import auth from '@react-native-firebase/auth';
+import firestore from "@react-native-firebase/firestore";
+import storage from '@react-native-firebase/storage';
 
-class EditProfile extends Component {
-    state = {  }
-    render() {
+const EditProfile = () => {
+    const navigation = useNavigation()
+    const [image, setImage] = useState(null)
+    const [uploading,setUploading] = useState(false)
+    const [transferred,setTransferred] = useState(0)
+    const [userData,setUserData] = useState(null)
+    const [email,setEmail] = useState('')
+
+    const getUser = async() => {
+    await firestore()
+    .collection('users')
+    .doc(auth().currentUser.uid)
+    .get()
+    .then((documentSnapshot) => {
+      if( documentSnapshot.exists ) {
+        console.log('User Data', documentSnapshot.data());
+        setUserData(documentSnapshot.data());
+        setEmail(documentSnapshot.data());
+      }
+    })
+  }
+
+    const updateUser = async() =>{
+        let imgUrl = await uploadImage();
+
+        if(imgUrl == null && userData.userImg){
+            imgUrl = userData.userImg;
+        }
+        firestore()
+        .collection('users')
+        .doc(auth().currentUser.uid)
+        .update({
+            firstname:userData.firstname,
+            lastname:userData.lastname,
+            phonenumb:userData.phonenumb,
+            userImg:imgUrl,
+        })
+        .then(()=>{
+            Alert.alert('Profile Telah Diperbarui');
+        })
+
+    }
+
+    
+  const uploadImage = async () => {
+    if( image == null ) {
+      return null;
+    }
+    const uploadUri = image;
+    let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
+
+    // Add timestamp to File Name
+    const extension = filename.split('.').pop(); 
+    const name = filename.split('.').slice(0, -1).join('.');
+    filename = name + Date.now() + '.' + extension;
+
+    setUploading(true);
+    setTransferred(0);
+
+    const storageRef = storage('gs://projecttav2-dd435.appspot.com').ref(`photos/${filename}`);
+    const task = storageRef.putFile(uploadUri);
+
+    // Set transferred state
+    task.on('state_changed', (taskSnapshot) => {
+      console.log(
+        `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
+      );
+
+      setTransferred(
+        Math.round(taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) *
+          100,
+      );
+    });
+
+    try {
+      await task;
+
+      const url = await storageRef.getDownloadURL();
+
+      setUploading(false);
+      setImage(null);
+
+      // Alert.alert(
+      //   'Image uploaded!',
+      //   'Your image has been uploaded to the Firebase Cloud Storage Successfully!',
+      // );
+      return url;
+
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+
+  };
+
+    useEffect(() =>{
+        getUser();
+    },[]);
+
+  const choosePhotoFromLibrary = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: true,
+      compressImageQuality: 0.7,
+    }).then((image) => {
+      console.log(image);
+      const imageUri = Platform.OS === 'Android' ? image.sourceURL : image.path;
+      setImage(imageUri);
+      this.bs.current.snapTo(1);
+    });
+  };
+
         return (
             <ScrollView style={styles.container}>
                 <View style={styles.ImgContainer}>
-                    <Image style={styles.EditImage} source={require('../../components/images/profile.png')}/>
-                    <TouchableOpacity style = {styles.EditButton}>
+                    <Image style={styles.EditImage} source={{
+                  uri: image
+                    ? image
+                    : userData
+                    ? userData.userImg ||
+                      'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'
+                    : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg',
+                }}/>
+                    <TouchableOpacity style = {styles.EditButton} onPress={choosePhotoFromLibrary}>
                         <ImageBackground style = {styles.EditButtonWidth} 
                         source = {require('../../components/images/pencil.png')}/>
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.BoxContainer}>
-                    <TextInput style = {styles.BoxStyle}>Nama/username</TextInput>
-                    <TextInput style = {styles.BoxStyle}>Nomor Telepon</TextInput>
-                    <TextInput style = {styles.BoxStyle}>Tempat, Tanggal Lahir</TextInput>
-                    <TextInput style = {styles.BoxStyle}>Profesi</TextInput>
+                    <TextInput style = {styles.BoxStyle}
+                    placeholder="Nama Depan"
+                    autoCorrect={false}
+                    value={userData ? userData.firstname : ''}
+                    onChangeText={(txt) => setUserData({...userData, firstname: txt})}
+                    />
+                    <TextInput style = {styles.BoxStyle}
+                    placeholder="Nama Belakang"
+                    autoCorrect={false}
+                    value={userData ? userData.lastname : ''}
+                    onChangeText={(txt) => setUserData({...userData, lastname: txt})}
+                    />
+                    <Text style = {styles.BoxStyle}>{email.email}</Text>
+                    <TextInput style = {styles.BoxStyle}
+                    placeholder="Nomor Telpon"
+                    autoCorrect={false}
+                    value={userData ? userData.phonenumb : ''}
+                    onChangeText={(txt) => setUserData({...userData, phonenumb: txt})}
+                    />
                 </View>
 
                 <View style = {styles.ButtonContainer}>
-                    <TouchableOpacity style = {styles.PerbaruiButton}>
+                    <TouchableOpacity style = {styles.PerbaruiButton} onPress={updateUser}>
                         <Text style = {styles.TxtButton}>Perbarui</Text>
                     </TouchableOpacity>
                 </View>
 
                 <View style = {styles.BackLayout}>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Settings')}> 
+                    <TouchableOpacity onPress={() => navigation.navigate('Settings')}> 
                         <Text style = {styles.BackButton}>Kembali</Text>
                     </TouchableOpacity>
 
@@ -41,7 +178,7 @@ class EditProfile extends Component {
             
         );
     }
-}
+
 
 const styles = StyleSheet.create({
     container:{
@@ -51,11 +188,13 @@ const styles = StyleSheet.create({
     ImgContainer:{
         alignItems:'center',
         marginTop:50,
+        
     },
 
     EditImage:{
         height:115,
         width:115,
+        borderRadius:200,
         
     },
 

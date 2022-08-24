@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
 import {ScrollView,StyleSheet,Text,TouchableOpacity,Image,ImageBackground,View} from 'react-native';
+import auth from '@react-native-firebase/auth';
 
 class Settings extends Component {
     state = {  }
+    signOut = () => {
+      auth().signOut().then(() => {
+      this.props.navigation.navigate('Login')
+    })
+    .catch(error => this.setState({ errorMessage: error.message }))
+  }  
     render() {
         return (
             <ScrollView style={styles.container}>
@@ -19,11 +26,11 @@ class Settings extends Component {
                         <Text style = {styles.TxtButn}>Edit Profil</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style = {styles.SettButton}>
+                    {/* <TouchableOpacity style = {styles.SettButton}>
                         <Image source={require('../../components/images/volume-mute.png')} 
                         style={styles.ImgStyle}/>
                         <Text style = {styles.TxtButn}>Matikan Notifikasi</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 
                     <TouchableOpacity style = {styles.SettButton} 
                     onPress={() => this.props.navigation.navigate('About')}>
@@ -32,7 +39,7 @@ class Settings extends Component {
                         <Text style = {styles.TxtButn}>Tentang Applikasi</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style = {styles.SettButton} onPress={() => this.props.navigation.navigate('Landing')}>
+                    <TouchableOpacity style = {styles.SettButton} onPress={() => this.signOut()}  >
                         <Image source={require('../../components/images/sign-out.png')} 
                         style={styles.ImgStyle}/>
                         <Text style = {styles.TxtButn}>Keluar</Text>

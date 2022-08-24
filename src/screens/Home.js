@@ -1,14 +1,27 @@
-import React, { Component } from 'react';
+import React, { Component, useState,useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import {ScrollView,StyleSheet,Text,TouchableOpacity,Image,ImageBackground,View} from 'react-native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
-class Home extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {  };
-    }
-    render() {
-        return (
-            <ScrollView style={styles.container}>
+const Home = () => {
+    const navigation = useNavigation()
+    const [name,setName] = useState('')
+
+    useEffect(() =>{
+        firestore().collection('users')
+        .doc(auth().currentUser.uid).get()
+        .then((snapshot) => {
+            if(snapshot.exists){
+                setName(snapshot.data())
+            }
+            else{
+                console.log('User Does Not Exist')
+            }
+        })
+    },[])
+    return(
+        <ScrollView style={styles.container}>
               <View style={styles.profileContainer}>
                 <TouchableOpacity>
                     <Image style={styles.profile}
@@ -19,7 +32,7 @@ class Home extends Component {
                 
                 <View style={styles.textContainer}>
                     <Text style={styles.userWlcm}>Selamat Datang</Text>
-                    <Text style={styles.username}>Nama User</Text>
+                    <Text style={styles.username}>{name.firstname} {name.lastname}</Text>
                 </View>             
               </View>
 
@@ -28,7 +41,7 @@ class Home extends Component {
               </View>
 
               <View style={styles.listContainer}>
-                  <TouchableOpacity style={styles.listLahan} onPress={() => this.props.navigation.navigate('Infolhn')}>
+                  <TouchableOpacity style={styles.listLahan} onPress={() => navigation.navigate('Infolhn')}>
                       <ImageBackground style={styles.imageLahan} imageStyle={{borderRadius:20}}
                       source={require('../../components/images/imageLahan.jpg')}>
                           <View style={styles.textView}>
@@ -37,11 +50,32 @@ class Home extends Component {
                       </ImageBackground>
                   </TouchableOpacity>
               </View>
+
+              <View style={styles.listContainer}>
+                  <TouchableOpacity style={styles.listLahan} onPress={() => navigation.navigate('Infolhn')}>
+                      <ImageBackground style={styles.imageLahan} imageStyle={{borderRadius:20}}
+                      source={require('../../components/images/imageLahan.jpg')}>
+                          <View style={styles.textView}>
+                              <Text style={styles.txtImage}>Lahan 2</Text>
+                          </View>
+                      </ImageBackground>
+                  </TouchableOpacity>
+              </View>
+
+              <View style={styles.listContainer3}>
+                  <TouchableOpacity style={styles.listLahan} onPress={() => navigation.navigate('Infolhn')}>
+                      <ImageBackground style={styles.imageLahan} imageStyle={{borderRadius:20}}
+                      source={require('../../components/images/imageLahan.jpg')}>
+                          <View style={styles.textView}>
+                              <Text style={styles.txtImage}>Lahan 3</Text>
+                          </View>
+                      </ImageBackground>
+                  </TouchableOpacity>
+              </View>
               
             </ScrollView>
-            
-        );
-    }
+
+    )
 }
 
 const styles = StyleSheet.create({
@@ -90,8 +124,11 @@ const styles = StyleSheet.create({
         lineHeight:25,
     },
     listContainer:{
-        marginTop:20,
+        marginHorizontal:25
+    },
+    listContainer3:{
         marginHorizontal:25,
+        marginBottom:120
     },
     listLahan:{
         marginVertical:25,

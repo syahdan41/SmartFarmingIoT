@@ -1,14 +1,55 @@
-import React, { Component } from 'react';
-import {View,StyleSheet,Text,TouchableOpacity,TextInput} from 'react-native';
+import React, { Component,useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import {View,StyleSheet,Text,TouchableOpacity,TextInput, Alert, Pressable, ScrollView} from 'react-native';
+import DatePicker from 'react-native-date-picker'
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
-class Daftarpage1 extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {  };
+const Daftarpage1 = () =>{
+    
+   const navigation = useNavigation()
+
+    const [email,setEmail] = useState('')
+    const [password,setPassword] = useState('')
+    const [firstname,setFirstname] = useState('')
+    const [lastname,setLastname] = useState('')
+    const [phonenumb,setPhonenumb] = useState('')
+    
+
+    registerUser = async (email,password,firstname,lastname,phonenumb) => {
+        await auth().createUserWithEmailAndPassword(email,password)
+        .then(() => {
+            auth().currentUser.sendEmailVerification({
+                handleCodeInApp:false,
+                url: 'https://projecttav2-dd435.firebaseapp.com',
+            })
+            .then(()=>{
+                alert('Link Verifikasi Telah Dikirim Pastikan Email Yang Anda Daftarkan Benar')
+                navigation.navigate('Login')
+            }).catch((error)=>{
+                alert(error.message)
+            })
+            .then(() => {
+                firestore().collection('users')
+                .doc(auth().currentUser.uid)
+                .set({
+                    firstname,
+                    lastname,
+                    email,
+                    phonenumb,
+                })
+               
+            })
+            .catch((error)=>{
+                alert(error.message)
+            })
+        })
+        .catch((error)=>{
+                alert(error.message)
+            })
     }
-    render() {
-        return (
-            <View style={styles.container}>
+    return(
+        <ScrollView style={styles.container}>
                 <View style={styles.txtContainer}>
                     <Text style={styles.grayTxt}>Langkah 1 dari 3</Text>
                     <Text style={styles.titleTxt}>Daftar</Text>
@@ -16,7 +57,7 @@ class Daftarpage1 extends Component {
                     
                     <View style={styles.masukLink}>
                     <Text style={styles.masukTxt}>Sudah Memiliki akun?</Text>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                         <Text style={styles.linkStyle}>Masuk</Text>
                     </TouchableOpacity>
                     </View>
@@ -24,29 +65,58 @@ class Daftarpage1 extends Component {
                 </View>
 
                 <View style={styles.boxContainer}>
-                        <TextInput style={styles.textBox}>Nama/Username</TextInput>
-                        <TextInput style={styles.textBox}>Nomor Telepon</TextInput>
-                        <TextInput style={styles.textBox}>Password</TextInput>
-                        <TextInput style={styles.textBox}>Konfirm Password</TextInput>
+                    <TextInput style={styles.textBox} 
+                    placeholder="Nama Depan"
+                    autoCapitalize={true}
+                    autoCorrect={false}
+                    onChangeText = {(firstname) => setFirstname(firstname) } />
+                        
+                    <TextInput style={styles.textBox} 
+                    placeholder="Nama Akhir"
+                    autoCapitalize={true}
+                    autoCorrect={false}
+                    onChangeText = {(lastname) => setLastname(lastname) }/>
+
+                    <TextInput style={styles.textBox} 
+                    placeholder="Nomor Telpon"
+                    keyboardType='number-pad'
+                    onChangeText = {(phonenumb) => setPhonenumb(phonenumb) }/>
+
+                    <TextInput style={styles.textBox}
+                    placeholder="Email"
+                    autoCorrect={false}
+                    onChangeText = {(email) => setEmail(email) }/>
+                        
+                    <TextInput style={styles.textBox} placeholder="Password"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        secureTextEntry={true}
+                    onChangeText = {(password) => setPassword(password) }/>
+
+                    <TextInput style={styles.textBox} placeholder="Konfirm Password"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        secureTextEntry={true}
+                    onChangeText = {(password) => setPassword(password) }/>
                 </View>
 
-                <TouchableOpacity style={styles.daftarButton} onPress={() => this.props.navigation.navigate('Daftar2')}>
+                <TouchableOpacity style={styles.daftarButton} onPress={() => registerUser(email,password,firstname,lastname,phonenumb)}>
                     <Text style={styles.buttonTxt}>Daftar</Text>
                 </TouchableOpacity>
 
                 <View style={styles.btmButton}>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Landing')}>
+                <TouchableOpacity onPress={() => navigation.navigate('Landing')}>
                     <Text style={styles.backBtn}>Kembali</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Landing')}>
+                <TouchableOpacity onPress={() => navigation.navigate('Landing')}>
                     <Text style={styles.cnclBtn}>Batal</Text>
                 </TouchableOpacity>
                 </View>
 
-            </View>
-        );
-    }
+            </ScrollView>
+
+    )
 }
 
 const styles = StyleSheet.create({
@@ -124,6 +194,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         marginHorizontal:45,
         marginTop:30,
+        marginBottom:100,
     },
     backBtn:{
         color:'#000',

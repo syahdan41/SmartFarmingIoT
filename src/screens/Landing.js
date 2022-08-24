@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {View, Text, TouchableOpacity,StyleSheet,Image, ImageBackground} from 'react-native';
 
+
 class Landing extends Component {
     constructor(props) {
         super(props);
@@ -34,13 +35,16 @@ class Landing extends Component {
 
 const styles = StyleSheet.create({
     container:{
-        flex:1
+        flex:1,
     },
     bgImage:{
         flex:1,
         justifyContent:'center',
         width:'100%',
         height:'100%',
+        backgroundColor: '#fff',
+        opacity: 0.9,
+        
     },
     txtView:{
         marginTop:50,

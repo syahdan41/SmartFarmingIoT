@@ -15,13 +15,13 @@ class InfoLahan extends Component {
 
               <View style={styles.infoContainer}>
                 <View style={styles.headingContainer}>
-                  <Text style={styles.heading}>Lahan 1</Text>
+                  <Text style={styles.heading}>Lahan 3</Text>
                 </View>
 
                 <View style={styles.txtContainer}>
-                  <Text style={styles.statusTxt}>Status:</Text>
-                  <Text style={styles.statusTxt}>Kelembaban :</Text>
-                  <Text style={styles.statusTxt}>Update terakhir :</Text>
+                  <Text style={styles.statusTxt}>Status: normal</Text>
+                  <Text style={styles.statusTxt}>Kelembaban :51%</Text>
+                  <Text style={styles.statusTxt}>Update terakhir :1661014746</Text>
                 </View>
                   
               </View>
