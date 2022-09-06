@@ -7,26 +7,28 @@ import firestore from '@react-native-firebase/firestore';
 const Home = () => {
     const navigation = useNavigation()
     const [name,setName] = useState('')
+    const [image,setImage] = useState('')
 
-    useEffect(() =>{
-        firestore().collection('users')
-        .doc(auth().currentUser.uid).get()
-        .then((snapshot) => {
-            if(snapshot.exists){
-                setName(snapshot.data())
-            }
-            else{
-                console.log('User Does Not Exist')
-            }
-        })
-    },[])
+    useEffect(() => {
+    const subscriber = firestore()
+      .collection('users')
+      .doc(auth().currentUser.uid)
+      .onSnapshot(documentSnapshot => {
+        console.log('User Data: ', documentSnapshot.data());
+        setName(documentSnapshot.data());
+        setImage(documentSnapshot.data());
+      });
+
+    // Stop listening for updates when no longer required
+    return () => subscriber();
+  }, []);
     return(
         <ScrollView style={styles.container}>
               <View style={styles.profileContainer}>
                 <TouchableOpacity>
                     <Image style={styles.profile}
                   imageStyle={{borderRadius:150}}
-                  source={require('../../components/images/profile.png')}
+                  source={{uri:image ? image.userImg: 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'||'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'}}
                 />
                 </TouchableOpacity>
                 
@@ -45,29 +47,29 @@ const Home = () => {
                       <ImageBackground style={styles.imageLahan} imageStyle={{borderRadius:20}}
                       source={require('../../components/images/imageLahan.jpg')}>
                           <View style={styles.textView}>
-                              <Text style={styles.txtImage}>Lahan 1</Text>
+                              <Text style={styles.txtImage}>Cabai 1</Text>
                           </View>
                       </ImageBackground>
                   </TouchableOpacity>
               </View>
 
               <View style={styles.listContainer}>
-                  <TouchableOpacity style={styles.listLahan} onPress={() => navigation.navigate('Infolhn')}>
+                  <TouchableOpacity style={styles.listLahan} onPress={() => navigation.navigate('Infolhn2')}>
                       <ImageBackground style={styles.imageLahan} imageStyle={{borderRadius:20}}
                       source={require('../../components/images/imageLahan.jpg')}>
                           <View style={styles.textView}>
-                              <Text style={styles.txtImage}>Lahan 2</Text>
+                              <Text style={styles.txtImage}>Cabai 2</Text>
                           </View>
                       </ImageBackground>
                   </TouchableOpacity>
               </View>
 
               <View style={styles.listContainer3}>
-                  <TouchableOpacity style={styles.listLahan} onPress={() => navigation.navigate('Infolhn')}>
+                  <TouchableOpacity style={styles.listLahan} onPress={() => navigation.navigate('Infolhn3')}>
                       <ImageBackground style={styles.imageLahan} imageStyle={{borderRadius:20}}
                       source={require('../../components/images/imageLahan.jpg')}>
                           <View style={styles.textView}>
-                              <Text style={styles.txtImage}>Lahan 3</Text>
+                              <Text style={styles.txtImage}>Cabai 3</Text>
                           </View>
                       </ImageBackground>
                   </TouchableOpacity>
@@ -94,6 +96,7 @@ const styles = StyleSheet.create({
     profile:{
         height:55,
         width:55,
+        borderRadius:150
     },
     userWlcm:{
         color:'#000',

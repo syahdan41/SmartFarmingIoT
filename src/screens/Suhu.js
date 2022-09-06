@@ -1,11 +1,37 @@
-import React, { Component } from 'react';
-import {ScrollView,StyleSheet,Text,TouchableOpacity,View} from 'react-native';
+import React, { Component, useState,useEffect } from 'react';
+import {Alert, ScrollView,StyleSheet,Text,TouchableOpacity,View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 
-class Suhu extends Component {
-    state = {  }
-    render() {
-        return (
+const Suhu = () => {
+    const navigation = useNavigation()
+    const [sensor,setSensor] = useState(0)
+    const [status,setStatus] = useState("")
 
+    useEffect(() => {
+    if(sensor.temperature >= 27 && sensor.temperature <= 35){
+        setStatus("Panas")
+    }else if(sensor.temperature >= 23 && sensor.temperature <= 31){
+        setStatus("Normal")
+    }else if(sensor.temperature <=20){
+        setStatus("Agak Dingin")
+    }else if(sensor.temperature <19){
+        setStatus("Dingin")
+    }
+    const subscriber = firestore()
+      .collection('SensorData')
+      .doc('plantData')
+      .onSnapshot(documentSnapshot => {
+        console.log('Sensor data: ', documentSnapshot.data());
+        setSensor(documentSnapshot.data());
+      });
+
+    // Stop listening for updates when no longer required
+    return () => subscriber();
+  }, [sensor.temperature]);
+        
+    return (
+        
             <ScrollView style={styles.container}>
 
                 <View style={styles.InfoContainer}>
@@ -14,11 +40,15 @@ class Suhu extends Component {
                 </View>
                 
                 <View style = {styles.TempView}>
-                    <Text style = {styles.TxtStyle}>30C</Text>
+                    <Text style = {styles.TxtStyle}>{sensor.temperature}C</Text>
+                </View>
+
+                <View style = {styles.statView}>
+                    <Text style = {styles.statTxt}>Status:{status}</Text>
                 </View>
 
                 <View style={styles.ButtonCont}>
-                    <TouchableOpacity style = {styles.ButtonView} onPress={() => this.props.navigation.navigate('Sensors')}>
+                    <TouchableOpacity style = {styles.ButtonView} onPress={() => navigation.navigate('Sensors')}>
                         <Text style = {styles.txtButton}>Kembali</Text>
                     </TouchableOpacity>
                 </View>
@@ -26,8 +56,7 @@ class Suhu extends Component {
             
         );
     }
-}
-
+    
 const styles = StyleSheet.create({
     container:{
         flex:1,
@@ -56,7 +85,6 @@ const styles = StyleSheet.create({
     },
 
     TempView:{
-        backgroundColor:'#F3380F',
         height:200,
         width:200,
         borderWidth:1,
@@ -65,6 +93,22 @@ const styles = StyleSheet.create({
         marginTop:50,
         marginHorizontal:100,
 
+    },
+
+     statView:{
+        borderWidth:1,
+        justifyContent:'center',
+        marginTop:50,
+        marginHorizontal:100,
+        padding:15,
+
+    },
+
+    statTxt:{
+        fontSize:20,
+        textAlign:'center',
+        color:'#000',
+        fontWeight:'400',
     },
 
     TxtStyle:{

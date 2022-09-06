@@ -14,20 +14,6 @@ const EditProfile = () => {
     const [userData,setUserData] = useState(null)
     const [email,setEmail] = useState('')
 
-    const getUser = async() => {
-    await firestore()
-    .collection('users')
-    .doc(auth().currentUser.uid)
-    .get()
-    .then((documentSnapshot) => {
-      if( documentSnapshot.exists ) {
-        console.log('User Data', documentSnapshot.data());
-        setUserData(documentSnapshot.data());
-        setEmail(documentSnapshot.data());
-      }
-    })
-  }
-
     const updateUser = async() =>{
         let imgUrl = await uploadImage();
 
@@ -65,7 +51,7 @@ const EditProfile = () => {
     setUploading(true);
     setTransferred(0);
 
-    const storageRef = storage('gs://projecttav2-dd435.appspot.com').ref(`photos/${filename}`);
+    const storageRef = storage().ref(filename);
     const task = storageRef.putFile(uploadUri);
 
     // Set transferred state
@@ -101,9 +87,19 @@ const EditProfile = () => {
 
   };
 
-    useEffect(() =>{
-        getUser();
-    },[]);
+    useEffect(() => {
+    const subscriber = firestore()
+      .collection('users')
+      .doc(auth().currentUser.uid)
+      .onSnapshot(documentSnapshot => {
+        console.log('User Data: ', documentSnapshot.data());
+        setUserData(documentSnapshot.data());
+        setEmail(documentSnapshot.data());
+      });
+
+    // Stop listening for updates when no longer required
+    return () => subscriber();
+  }, []);
 
   const choosePhotoFromLibrary = () => {
     ImagePicker.openPicker({
@@ -115,7 +111,6 @@ const EditProfile = () => {
       console.log(image);
       const imageUri = Platform.OS === 'Android' ? image.sourceURL : image.path;
       setImage(imageUri);
-      this.bs.current.snapTo(1);
     });
   };
 

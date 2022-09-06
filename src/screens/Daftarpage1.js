@@ -1,7 +1,6 @@
 import React, { Component,useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {View,StyleSheet,Text,TouchableOpacity,TextInput, Alert, Pressable, ScrollView} from 'react-native';
-import DatePicker from 'react-native-date-picker'
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
@@ -11,12 +10,30 @@ const Daftarpage1 = () =>{
 
     const [email,setEmail] = useState('')
     const [password,setPassword] = useState('')
+    const [passwordConf,setPasswordConf] = useState('')
     const [firstname,setFirstname] = useState('')
     const [lastname,setLastname] = useState('')
     const [phonenumb,setPhonenumb] = useState('')
     
 
     registerUser = async (email,password,firstname,lastname,phonenumb) => {
+        if(email === '' && password ===''){
+            navigation.navigate('Daftar1')
+            Alert.alert('Harap Masukan Email dan Password!')
+        }
+         if(firstname === '' && lastname ===''){
+            navigation.navigate('Daftar1')
+            Alert.alert('Harap Masukan Data Nama!')
+        }
+        if(phonenumb != '10'){
+            navigation.navigate('Daftar1')
+            Alert.alert('No Telpon Harus 10 Digit!')
+        }
+        if( password != passwordConf){
+            navigation.navigate('Daftar1')
+            Alert.alert('Konfirmasi Password Salah!')
+        }
+        else{
         await auth().createUserWithEmailAndPassword(email,password)
         .then(() => {
             auth().currentUser.sendEmailVerification({
@@ -27,7 +44,7 @@ const Daftarpage1 = () =>{
                 alert('Link Verifikasi Telah Dikirim Pastikan Email Yang Anda Daftarkan Benar')
                 navigation.navigate('Login')
             }).catch((error)=>{
-                alert(error.message)
+                Alert.alert(error.message)
             })
             .then(() => {
                 firestore().collection('users')
@@ -41,19 +58,21 @@ const Daftarpage1 = () =>{
                
             })
             .catch((error)=>{
-                alert(error.message)
+                Alert.alert(error.message)
             })
         })
         .catch((error)=>{
-                alert(error.message)
+                Alert.alert(error.message)
             })
+
+        }
+        
     }
     return(
         <ScrollView style={styles.container}>
                 <View style={styles.txtContainer}>
-                    <Text style={styles.grayTxt}>Langkah 1 dari 3</Text>
                     <Text style={styles.titleTxt}>Daftar</Text>
-                    <Text style={styles.descTxt}>Daftarkan diri kamu untuk melanjutkan ke tahap verifikasi kode OTP.</Text>
+                    <Text style={styles.descTxt}>Daftarkan diri kamu untuk melanjutkan ke tahap login.</Text>
                     
                     <View style={styles.masukLink}>
                     <Text style={styles.masukTxt}>Sudah Memiliki akun?</Text>
@@ -97,7 +116,7 @@ const Daftarpage1 = () =>{
                         autoCapitalize="none"
                         autoCorrect={false}
                         secureTextEntry={true}
-                    onChangeText = {(password) => setPassword(password) }/>
+                    onChangeText = {(passwordConf) => setPasswordConf(passwordConf) }/>
                 </View>
 
                 <TouchableOpacity style={styles.daftarButton} onPress={() => registerUser(email,password,firstname,lastname,phonenumb)}>

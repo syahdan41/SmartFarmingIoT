@@ -4,10 +4,12 @@ import auth from '@react-native-firebase/auth';
 
 import Landing from './src/screens/Landing';
 import Daftarpage1 from './src/screens/Daftarpage1';
-import Daftarpage2 from './src/screens/Daftarpage2';
+import Lupapw from './src/screens/Lupapw';
 import Login from './src/screens/Login';
 import Home from './src/screens/Home';
 import InfoLahan from './src/screens/InfoLahan';
+import InfoLahan2 from './src/screens/InfoLahan2';
+import InfoLahan3 from './src/screens/infoLahan3';
 import InfoSensor from './src/screens/InfoSensor';
 import Settings from './src/screens/Settings';
 import TabNav from './TabNav';
@@ -46,9 +48,11 @@ function MainStack(){
       <Stack.Navigator initialRouteName='Landing' screenOptions={{headerShown:false}}>
         <Stack.Screen name = 'Landing' component={Landing}/>
         <Stack.Screen name = 'Daftar1' component={Daftarpage1}/>
-        <Stack.Screen name = 'Daftar2' component={Daftarpage2}/>
+        <Stack.Screen name = 'lupaPw' component={Lupapw}/>
         <Stack.Screen name = 'Login' component={Login}/>        
         <Stack.Screen name = 'Infolhn' component={InfoLahan}/>
+        <Stack.Screen name = 'Infolhn2' component={InfoLahan2}/>
+        <Stack.Screen name = 'Infolhn3' component={InfoLahan3}/>
         <Stack.Screen name = 'Edit' component={EditProfile}/>
         <Stack.Screen name = 'About' component={About}/>
         <Stack.Screen name = 'Water' component={WaterLevel}/>

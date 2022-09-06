@@ -1,11 +1,35 @@
-import React, { Component } from 'react';
-import {ScrollView,StyleSheet,Text,TouchableOpacity,View} from 'react-native';
+import React, { Component, useState,useEffect } from 'react';
+import {Alert, ScrollView,StyleSheet,Text,TouchableOpacity,View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 
-class Light extends Component {
-    state = {  }
-    render() {
-        return (
+const Light = () => {
+    const navigation = useNavigation()
+    const [sensor,setSensor] = useState(0)
+    const [status,setStatus] = useState("")
 
+    useEffect(() => {
+    if(sensor.Light_intens <= 900){
+        setStatus("Terang")
+    }else if(sensor.Light_intens >= 900 && sensor.Light_intens>= 2000){
+        setStatus("Redup")
+    }else if(sensor.Light_intens >=3000){
+        setStatus("Gelap")
+    }
+    const subscriber = firestore()
+      .collection('SensorData')
+      .doc('plantData')
+      .onSnapshot(documentSnapshot => {
+        console.log('Sensor data: ', documentSnapshot.data());
+        setSensor(documentSnapshot.data());
+      });
+
+    // Stop listening for updates when no longer required
+    return () => subscriber();
+  }, [sensor.Light_intens]);
+        
+    return (
+        
             <ScrollView style={styles.container}>
 
                 <View style={styles.InfoContainer}>
@@ -14,11 +38,15 @@ class Light extends Component {
                 </View>
                 
                 <View style = {styles.TempView}>
-                    <Text style = {styles.TxtStyle}>30C</Text>
+                    <Text style = {styles.TxtStyle}>{sensor.Light_intens}</Text>
+                </View>
+
+                <View style = {styles.statView}>
+                    <Text style = {styles.statTxt}>Status:{status}</Text>
                 </View>
 
                 <View style={styles.ButtonCont}>
-                    <TouchableOpacity style = {styles.ButtonView} onPress={() => this.props.navigation.navigate('Sensors')}>
+                    <TouchableOpacity style = {styles.ButtonView} onPress={() => navigation.navigate('Sensors')}>
                         <Text style = {styles.txtButton}>Kembali</Text>
                     </TouchableOpacity>
                 </View>
@@ -26,8 +54,7 @@ class Light extends Component {
             
         );
     }
-}
-
+    
 const styles = StyleSheet.create({
     container:{
         flex:1,
@@ -56,7 +83,6 @@ const styles = StyleSheet.create({
     },
 
     TempView:{
-        backgroundColor:'#F3380F',
         height:200,
         width:200,
         borderWidth:1,
@@ -66,9 +92,24 @@ const styles = StyleSheet.create({
         marginHorizontal:100,
 
     },
+    statView:{
+        borderWidth:1,
+        justifyContent:'center',
+        marginTop:50,
+        marginHorizontal:100,
+        padding:15,
+
+    },
 
     TxtStyle:{
         fontSize:45,
+        textAlign:'center',
+        color:'#000',
+        fontWeight:'400',
+    },
+
+    statTxt:{
+        fontSize:20,
         textAlign:'center',
         color:'#000',
         fontWeight:'400',

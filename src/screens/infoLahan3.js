@@ -3,15 +3,13 @@ import {View,ScrollView,StyleSheet,Text,TouchableOpacity} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 
-const InfoLahan = () =>{
+const InfoLahan3 = () =>{
     const navigation = useNavigation()
     const [sensor,setSensor] = useState(0)
     const [status,setStatus] = useState("")
-    const [visibleRed,setVisibleRed] = useState(false)
-    const [visibleGreen, setVisibleGreen] = useState(false)
 
     useEffect(() => {
-    if(sensor.Soil_value1 <= 30){
+    if(sensor.Soil_value3 <= 30){
         setStatus("Kering")
     }else{
         setStatus("Normal")
@@ -26,7 +24,7 @@ const InfoLahan = () =>{
 
     // Stop listening for updates when no longer required
     return () => subscriber();
-  }, [sensor.Soil_value1]);
+  }, [sensor.Soil_value3]);
     
         return (
             <ScrollView style={styles.container}>
@@ -36,12 +34,12 @@ const InfoLahan = () =>{
 
               <View style={styles.infoContainer}>
                 <View style={styles.headingContainer}>
-                  <Text style={styles.heading}>Tanaman 1</Text>
+                  <Text style={styles.heading}>Tanaman 3</Text>
                 </View>
 
                 <View style={styles.txtContainer}>
                   <Text style={styles.statusTxt}>Status:{status}</Text>
-                  <Text style={styles.statusTxt}>Kelembaban :{sensor.Soil_value1}%</Text>
+                  <Text style={styles.statusTxt}>Kelembaban :{sensor.Soil_value3}%</Text>
                   <Text style={styles.statusTxt}>Update terakhir :1661014746</Text>
                 </View>
                   
@@ -128,4 +126,4 @@ const styles = StyleSheet.create({
     },
 
 })
-export default InfoLahan;
+export default InfoLahan3;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import {View,StyleSheet,Text,TouchableOpacity,TextInput,ImageBackground} from 'react-native';
+import {View,StyleSheet,Text,TouchableOpacity,TextInput,ImageBackground, Alert} from 'react-native';
 import auth from '@react-native-firebase/auth';
 
 const Login = () =>{
@@ -13,6 +13,7 @@ const Login = () =>{
             await auth().signInWithEmailAndPassword(email,password)
             navigation.navigate('HomeScreen')
         }catch(error){
+            Alert.alert("Harap Masukan Email & Password")
             alert(error.message)
         }
         
@@ -54,7 +55,7 @@ const Login = () =>{
                     <Text style={styles.backBtn}>Batal</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate('Landing')}>
+                <TouchableOpacity onPress={() => navigation.navigate('lupaPw')}>
                     <Text style={styles.lupapwBtn}>Lupa Password</Text>
                 </TouchableOpacity>
                 </View>

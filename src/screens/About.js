@@ -13,15 +13,11 @@ class About extends Component {
                         <Text style = {styles.AbtTittle1}>TENTANG</Text>
                         <Text style = {styles.AbtTittle2}>APLIKASI</Text>
 
-                        <Text style = {styles.Abt}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                        when an unknown printer took a galley of type and s
-                        crambled it to make a type specimen book. </Text>
+                        <Text style = {styles.Abt}>Aplikasi ini merupakan aplikasi untuk m
+                        emonitoring kondisi tanaman cabai yang terintegrasi oleh 
+                        microcontroller NodeMCU ESP32 dengan sensor kelembaban tanah, suhu, kelembaban udara,
+                        intesitas cahaya,ultrasonik. Para pengguna dapat memonitoring keadaan tanaman yang tertanam dengan cepat dan mudah. </Text>
 
-                         <Text style = {styles.Abt}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                        when an unknown printer took a galley of type and s
-                        crambled it to make a type specimen book. </Text>
                     </View>
 
                     <View style = {styles.ButtonContainer}>
@@ -79,6 +75,7 @@ const styles = StyleSheet.create({
         padding:10,
         color:'#000',
         fontWeight:'400',
+        marginBottom:50,
 
 
     },

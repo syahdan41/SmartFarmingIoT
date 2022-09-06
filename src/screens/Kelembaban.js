@@ -1,27 +1,24 @@
 import React, { Component, useState,useEffect } from 'react';
-import {ScrollView,StyleSheet,Text,TouchableOpacity,View} from 'react-native';
-import {firebase} from '@react-native-firebase/database';
+import {Alert, ScrollView,StyleSheet,Text,TouchableOpacity,View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 
 const Kelembaban = () => {
-    
-    const [kelembaban,setLembab] = useState(0)
-    
-   useEffect(() =>{
-        if(kelembaban == 0){
-        // rubah komponent
-    }
-         firebase.app().database('https://projecttav2-dd435-default-rtdb.asia-southeast1.firebasedatabase.app/')
-        .ref('/Sensor_Data/Plant1/')
-        .once('value')
-        .then((snapshot) => {
-            if(snapshot.exists){
-                setLembab(snapshot.val())
-            }
-            else{
-                console.log('User Does Not Exist')
-            }
-        })
-    },[])
+    const navigation = useNavigation()
+    const [sensor,setSensor] = useState(0)
+
+useEffect(() => {
+    const subscriber = firestore()
+      .collection('SensorData')
+      .doc('plantData')
+      .onSnapshot(documentSnapshot => {
+        console.log('Sensor data: ', documentSnapshot.data());
+        setSensor(documentSnapshot.data());
+      });
+
+    // Stop listening for updates when no longer required
+    return () => subscriber();
+  }, []);
 
     return (
     <ScrollView style={styles.container}>
@@ -30,10 +27,10 @@ const Kelembaban = () => {
                     
                 </View>
                 
-                <View style = {styles.HumidView}>
-                    <Text style = {styles.TxtStyle}>{kelembaban.Soil_value1}%</Text>
-                    <Text style = {styles.TxtStyle}>40%</Text>
-                    <Text style = {styles.TxtStyle}>30%</Text>
+                <View style = {styles.HumidView1}>
+                    <Text style = {styles.TxtStyle}>{sensor.Soil_value1}%</Text>
+                    <Text style = {styles.TxtStyle}>{sensor.Soil_value2}%</Text>
+                    <Text style = {styles.TxtStyle}>{sensor.Soil_value3}%</Text>
                 </View>
                 <View style = {styles.descView}>
                     <Text style = {styles.descTxt1}>Tanaman 1</Text>
@@ -41,9 +38,8 @@ const Kelembaban = () => {
                     <Text style = {styles.descTxt3}>Tanaman 3</Text>
                 </View>
                 
-
                 <View style={styles.ButtonCont}>
-                    <TouchableOpacity style = {styles.ButtonView} onPress={() => this.props.navigation.navigate('Sensors')}>
+                    <TouchableOpacity style = {styles.ButtonView} onPress={() => navigation.navigate('Sensors')}>
                         <Text style = {styles.txtButton}>Kembali</Text>
                     </TouchableOpacity>
                 </View>
@@ -79,12 +75,13 @@ const styles = StyleSheet.create({
         paddingHorizontal:30,
     },
 
-    HumidView:{
+    HumidView1:{
         marginHorizontal:50,
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',
-        marginTop:100
+        marginTop:100,
+
     },
 
     descView:{
@@ -92,15 +89,18 @@ const styles = StyleSheet.create({
         marginHorizontal:40
     },
     descTxt1:{
-        marginHorizontal:15
+        marginHorizontal:15,
+        color:'#000'
 
     },
     descTxt2:{
-        marginHorizontal:35
+        marginHorizontal:35,
+        color:'#000'
 
     },
     descTxt3:{
-        marginHorizontal:15
+        marginHorizontal:15,
+        color:'#000'
 
     },
 

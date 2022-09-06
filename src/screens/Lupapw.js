@@ -1,55 +1,63 @@
-import React, { Component } from 'react';
-import {View,StyleSheet,Text,TouchableOpacity,TextInput} from 'react-native';
+import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import {View,StyleSheet,Text,TouchableOpacity,TextInput, Alert} from 'react-native';
+import auth from '@react-native-firebase/auth';
 
-class Daftarpage2 extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {  };
+
+const Lupapw = () => {
+   const navigation = useNavigation()
+   const [email,setEmail] = useState('')
+
+    const loginUser = async(email) => {
+        const emailVal=email;
+        try{
+            await auth().sendPasswordResetEmail(emailVal)
+            Alert.alert('Link Untuk Reset Telah Dikirim Harap Cek Email Anda.')
+        }catch(error){
+            Alert.alert('Gagal Mengirim.')
+            alert(error.message)
+        }
+        
     }
-    render() {
+    
         return (
             <View style={styles.container}>
                 <View style={styles.txtContainer}>
-                    <Text style={styles.grayTxt}>Langkah 2 dari 3</Text>
-                    <Text style={styles.titleTxt}>Verifikasi</Text>
-                    <Text style={styles.descTxt}>Silahkan masukan kode OTP yang telah terkirim melalui nomor telepon kamu.</Text>
+                    <Text style={styles.titleTxt}>Lupa Password?</Text>
+                    <Text style={styles.descTxt}>Silahkan masukan Email yang terdaftar di bawah.</Text>
                     
                         <View style={styles.masukLink}>
-                            <Text style={styles.masukTxt}>Bukan kamu?</Text>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Daftar1')}>
-                                <Text style={styles.linkStyle}>Ganti nomor</Text>
+                            <Text style={styles.masukTxt}>Belum memiliki akun?klik</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate('Daftar1')}>
+                                <Text style={styles.linkStyle}>daftar</Text>
                             </TouchableOpacity>
                         </View>    
                 </View>
 
                 <View style={styles.verifContainer}>
-                    <TextInput style={styles.inputVerif}/>
+                    <TextInput style={styles.inputVerif} 
+                        placeholder = 'Email' 
+                        placeholderTextColor={'black'} 
+                        onChangeText = {(email) => setEmail(email)}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        />
                 </View>
                 
+                
                 <TouchableOpacity style={styles.lnjtButton} 
-                onPress={() => props.onSubmit(code)} >
-                    <Text style={styles.buttonTxt}>Lanjut</Text>
+                onPress={()=> loginUser(email)}>
+                    <Text style={styles.buttonTxt}>Kirim</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.resendButton} 
-                onPress={() => this.props.navigation.navigate('Daftar2')}>
-                    <Text style={styles.buttonTxt}>Kirim Ulang</Text>
+                onPress={() => navigation.navigate('Login')}>
+                    <Text style={styles.buttonTxt}>Kembali</Text>
                 </TouchableOpacity>
-
-                <View style={styles.btmButton}>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Daftar1')}>
-                    <Text style={styles.backBtn}>Kembali</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Landing')}>
-                    <Text style={styles.cnclBtn}>Batal</Text>
-                </TouchableOpacity>
-                </View>
-
             </View>
             
         );
-    }
 }
+    
 const styles = StyleSheet.create({
     container:{
         flex:1,
@@ -96,15 +104,15 @@ const styles = StyleSheet.create({
         marginTop:60,
     },
     inputVerif:{
-        borderBottomWidth:3,
+        borderWidth:3,
         borderColor:'#000',
-        marginHorizontal:90,
+        marginHorizontal:50,
         padding:10,
         justifyContent:'center',
         alignItems:'center',
-        fontSize:35,
-        fontWeight:'bold',
+        fontSize:20,
         textAlign:'center',
+        marginVertical:15,
     },
     lnjtButton:{
         borderRadius:2,
@@ -155,4 +163,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Daftarpage2;
+export default Lupapw;

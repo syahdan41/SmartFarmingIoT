@@ -1,15 +1,27 @@
-import React, { Component,useState,useEffect } from 'react';
-import {ScrollView,StyleSheet,Text,TouchableOpacity,View} from 'react-native';
-import database from '@react-native-firebase/database';
+import React, { Component, useState,useEffect } from 'react';
+import {Alert, ScrollView,StyleSheet,Text,TouchableOpacity,View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 
-class Humid extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {  };
-    }
-    render() {
-        return (
+const Humid = () => {
+    const navigation = useNavigation()
+    const [sensor,setSensor] = useState(0)
 
+    useEffect(() => {
+    const subscriber = firestore()
+      .collection('SensorData')
+      .doc('plantData')
+      .onSnapshot(documentSnapshot => {
+        console.log('Sensor data: ', documentSnapshot.data());
+        setSensor(documentSnapshot.data());
+      });
+
+    // Stop listening for updates when no longer required
+    return () => subscriber();
+  }, []);
+        
+    return (
+        
             <ScrollView style={styles.container}>
 
                 <View style={styles.InfoContainer}>
@@ -18,11 +30,11 @@ class Humid extends Component {
                 </View>
                 
                 <View style = {styles.TempView}>
-                    <Text style = {styles.TxtStyle}>30C</Text>
+                    <Text style = {styles.TxtStyle}>{sensor.humidity}</Text>
                 </View>
 
                 <View style={styles.ButtonCont}>
-                    <TouchableOpacity style = {styles.ButtonView} onPress={() => this.props.navigation.navigate('Sensors')}>
+                    <TouchableOpacity style = {styles.ButtonView} onPress={() => navigation.navigate('Sensors')}>
                         <Text style = {styles.txtButton}>Kembali</Text>
                     </TouchableOpacity>
                 </View>
@@ -30,8 +42,7 @@ class Humid extends Component {
             
         );
     }
-}
-
+    
 const styles = StyleSheet.create({
     container:{
         flex:1,
@@ -60,7 +71,6 @@ const styles = StyleSheet.create({
     },
 
     TempView:{
-        backgroundColor:'#F3380F',
         height:200,
         width:200,
         borderWidth:1,
