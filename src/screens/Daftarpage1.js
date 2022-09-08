@@ -25,7 +25,7 @@ const Daftarpage1 = () =>{
             navigation.navigate('Daftar1')
             Alert.alert('Harap Masukan Data Nama!')
         }
-        if(phonenumb != '10'){
+        if(phonenumb === ''){
             navigation.navigate('Daftar1')
             Alert.alert('No Telpon Harus 10 Digit!')
         }
@@ -33,7 +33,6 @@ const Daftarpage1 = () =>{
             navigation.navigate('Daftar1')
             Alert.alert('Konfirmasi Password Salah!')
         }
-        else{
         await auth().createUserWithEmailAndPassword(email,password)
         .then(() => {
             auth().currentUser.sendEmailVerification({
@@ -65,7 +64,6 @@ const Daftarpage1 = () =>{
                 Alert.alert(error.message)
             })
 
-        }
         
     }
     return(
@@ -86,34 +84,40 @@ const Daftarpage1 = () =>{
                 <View style={styles.boxContainer}>
                     <TextInput style={styles.textBox} 
                     placeholder="Nama Depan"
+                    placeholderTextColor={'black'} 
                     autoCapitalize={true}
                     autoCorrect={false}
                     onChangeText = {(firstname) => setFirstname(firstname) } />
                         
                     <TextInput style={styles.textBox} 
                     placeholder="Nama Akhir"
+                    placeholderTextColor={'black'} 
                     autoCapitalize={true}
                     autoCorrect={false}
                     onChangeText = {(lastname) => setLastname(lastname) }/>
 
                     <TextInput style={styles.textBox} 
                     placeholder="Nomor Telpon"
+                    placeholderTextColor={'black'} 
                     keyboardType='number-pad'
                     onChangeText = {(phonenumb) => setPhonenumb(phonenumb) }/>
 
                     <TextInput style={styles.textBox}
                     placeholder="Email"
+                    placeholderTextColor={'black'} 
                     autoCorrect={false}
                     onChangeText = {(email) => setEmail(email) }/>
                         
                     <TextInput style={styles.textBox} placeholder="Password"
                         autoCapitalize="none"
+                        placeholderTextColor={'black'} 
                         autoCorrect={false}
                         secureTextEntry={true}
                     onChangeText = {(password) => setPassword(password) }/>
 
                     <TextInput style={styles.textBox} placeholder="Konfirm Password"
                         autoCapitalize="none"
+                        placeholderTextColor={'black'} 
                         autoCorrect={false}
                         secureTextEntry={true}
                     onChangeText = {(passwordConf) => setPasswordConf(passwordConf) }/>
@@ -137,6 +141,7 @@ const Daftarpage1 = () =>{
 
     )
 }
+
 
 const styles = StyleSheet.create({
     container:{
@@ -191,6 +196,7 @@ const styles = StyleSheet.create({
         paddingVertical:15,
         marginHorizontal:20,
         marginVertical:10,
+        color:'#000'
     },
     daftarButton:{
         borderRadius:2,

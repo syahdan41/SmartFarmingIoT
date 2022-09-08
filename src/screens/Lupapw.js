@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
         fontSize:20,
         textAlign:'center',
         marginVertical:15,
+        color:'#000'
     },
     lnjtButton:{
         borderRadius:2,

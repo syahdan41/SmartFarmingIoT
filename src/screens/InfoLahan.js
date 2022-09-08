@@ -11,8 +11,10 @@ const InfoLahan = () =>{
     const [visibleGreen, setVisibleGreen] = useState(false)
 
     useEffect(() => {
-    if(sensor.Soil_value1 <= 30){
+    if(sensor.Soil_value1 <= 40){
         setStatus("Kering")
+    }else if(sensor.Soil_value1 >= 60){
+        setStatus("Basah")
     }else{
         setStatus("Normal")
     }
@@ -23,7 +25,6 @@ const InfoLahan = () =>{
         console.log('Sensor data: ', documentSnapshot.data());
         setSensor(documentSnapshot.data());
       });
-
     // Stop listening for updates when no longer required
     return () => subscriber();
   }, [sensor.Soil_value1]);
@@ -42,7 +43,7 @@ const InfoLahan = () =>{
                 <View style={styles.txtContainer}>
                   <Text style={styles.statusTxt}>Status:{status}</Text>
                   <Text style={styles.statusTxt}>Kelembaban :{sensor.Soil_value1}%</Text>
-                  <Text style={styles.statusTxt}>Update terakhir :1661014746</Text>
+                  <Text style={styles.statusTxt}>Update terakhir : {sensor.timestamp}</Text>
                 </View>
                   
               </View>

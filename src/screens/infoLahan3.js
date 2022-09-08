@@ -9,8 +9,10 @@ const InfoLahan3 = () =>{
     const [status,setStatus] = useState("")
 
     useEffect(() => {
-    if(sensor.Soil_value3 <= 30){
+    if(sensor.Soil_value3 <= 40){
         setStatus("Kering")
+    }else if(sensor.Soil_value3>=60){
+        setStatus("Basah")
     }else{
         setStatus("Normal")
     }
@@ -40,7 +42,7 @@ const InfoLahan3 = () =>{
                 <View style={styles.txtContainer}>
                   <Text style={styles.statusTxt}>Status:{status}</Text>
                   <Text style={styles.statusTxt}>Kelembaban :{sensor.Soil_value3}%</Text>
-                  <Text style={styles.statusTxt}>Update terakhir :1661014746</Text>
+                  <Text style={styles.statusTxt}>Update terakhir :{sensor.timestamp}</Text>
                 </View>
                   
               </View>

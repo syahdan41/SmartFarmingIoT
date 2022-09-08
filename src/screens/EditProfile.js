@@ -16,7 +16,6 @@ const EditProfile = () => {
 
     const updateUser = async() =>{
         let imgUrl = await uploadImage();
-
         if(imgUrl == null && userData.userImg){
             imgUrl = userData.userImg;
         }
@@ -28,11 +27,11 @@ const EditProfile = () => {
             lastname:userData.lastname,
             phonenumb:userData.phonenumb,
             userImg:imgUrl,
-        })
-        .then(()=>{
+            email:userData.email,
+        }).then(()=>{
             Alert.alert('Profile Telah Diperbarui');
-        })
-
+        })     
+        
     }
 
     
@@ -94,7 +93,6 @@ const EditProfile = () => {
       .onSnapshot(documentSnapshot => {
         console.log('User Data: ', documentSnapshot.data());
         setUserData(documentSnapshot.data());
-        setEmail(documentSnapshot.data());
       });
 
     // Stop listening for updates when no longer required
@@ -144,7 +142,12 @@ const EditProfile = () => {
                     value={userData ? userData.lastname : ''}
                     onChangeText={(txt) => setUserData({...userData, lastname: txt})}
                     />
-                    <Text style = {styles.BoxStyle}>{email.email}</Text>
+                    <TextInput style = {styles.BoxStyle}
+                    placeholder="email"
+                    autoCorrect={false}
+                    value={userData ? userData.email : ''}
+                    onChangeText={(txt) => setUserData({...userData, email: txt})}
+                    />
                     <TextInput style = {styles.BoxStyle}
                     placeholder="Nomor Telpon"
                     autoCorrect={false}

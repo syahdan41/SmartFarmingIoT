@@ -40,7 +40,7 @@ const Suhu = () => {
                 </View>
                 
                 <View style = {styles.TempView}>
-                    <Text style = {styles.TxtStyle}>{sensor.temperature}C</Text>
+                    <Text style = {styles.TxtStyle}>{sensor.temperature}°C</Text>
                 </View>
 
                 <View style = {styles.statView}>
